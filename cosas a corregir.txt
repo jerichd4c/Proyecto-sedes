@@ -1,10 +1,12 @@
-1. llenar todas las casillas (enteros o nombres)
-2. asignar jefe (por casilla)
- 2.1 cambiar jefe
- 2.2 eliminar jefe
+1. llenar todas las casillas (enteros o nombres) LISTO
+2. asignar jefe (por casilla) LISTO
+ 2.1 cambiar jefe LISTO
+ 2.2 eliminar jefe LISTO
 3. guardarlo en un archivo .txt (para asi poder ver los cambios)
-4. eliminar empleado (por casilla)
+4. eliminar empleado (por casilla) LISTO
 NOTA: función "solicitar oficina" no es agregar, si no mostrar
 	NOTA 2: indicar que si la casilla ya tiene un empleado, preguntarle al usuario si quiere eliminar o dejarlo.
 
 ver la lógica detrás de cada función y bloque de código.
+
+5. Tengo que mostrar la oficina completa, hacer que se complemento con la función de guardado.
