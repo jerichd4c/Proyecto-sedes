@@ -9,4 +9,7 @@ NOTA: función "solicitar oficina" no es agregar, si no mostrar
 
 ver la lógica detrás de cada función y bloque de código.
 
-5. Tengo que mostrar la oficina completa, hacer que se complemento con la función de guardado.
+5. Tengo que mostrar la oficina completa, hacer que se complemento con la función de guardado. LISTO
+	5.1 arreglar output de la matriz haciendo una columna extra
+	5.2 arreglar matrices contándose desde 0
+6. Hacer que la matriz se llene de todos enteros O todos strings

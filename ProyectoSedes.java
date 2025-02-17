@@ -76,7 +76,7 @@ class Sede {
     //metodo para mostrar jefe
     public void mostrarJefe() {
         if (jefeFila != -1 && jefeColumna != -1) {
-            System.out.println("Jefe actual: (" + cubiculos[jefeFila][jefeColumna] + "en posicion (" + jefeFila + ", " + jefeColumna + ")");
+            System.out.println("Jefe actual: (" + cubiculos[jefeFila][jefeColumna] + " en posicion (" + jefeFila + ", " + jefeColumna + ")");
         } else {
             System.out.println("No hay jefe asignado");
         }
@@ -137,6 +137,41 @@ class Sede {
         return fila >= 0 && fila < filas && columna >= 0 && columna < columnas;
     }
     
+    //metodo para mostrar la oficina completa (matriz)
+    public void mostrarMatriz(){
+        System.out.println("\n***"+ nombre +"***");
+        System.out.println("(J) = Jefe | (V) = Cubiculo vacio\n");
+        //imprimir numero de columnas
+        System.out.print("        ");
+        //columnas
+        for (int j=0; j<columnas; j++) {
+            System.out.printf("|  Col %-4d ", j);
+        }
+        System.out.println("|");
+        String separador=crearSeparador();
+        System.out.println(separador);
+        //filas
+        for (int i=0; i<filas; i++) {
+        System.out.printf("Fila %-2d ", i);
+        for (int j=0; j<columnas; j++) {
+            Object valor= cubiculos[i][j];
+            String celda= valor != null ? valor.toString() : "(V)";
+            if (esJefe(i, j)) celda += " (J)";
+            System.out.printf("| %-8s", celda.length() > 8 ? celda.substring(0, 5) + "..." : celda);
+        }
+        System.out.println("|");
+        System.out.println(separador);
+    } 
+}
+
+    //metodo para crear el separador dentro de funcion de mostrarMatriz
+    private String crearSeparador() {
+        StringBuilder sb= new StringBuilder("       +");
+        for (int j=0; j<columnas; j++) {
+            sb.append("-----------+");
+        }
+    return sb.toString();
+    }
 }
 
 // main 
@@ -166,24 +201,26 @@ public static void main(String[] args) {
 
     while (true) {
         System.out.println("***Menu***");
-        System.out.println("1. Mostrar oficina");
-        System.out.println("2. Asignar oficina");
-        System.out.println("3. Mostrar jefe");
-        System.out.println("4. Asignar jefe");
-        System.out.println("5. Eliminar jefe");
-        System.out.println("6. Eliminar empleado");
-        System.out.println("7. Mostrar oficinas adyacentes");
-        System.out.println("8. Salir");
+        System.out.println("1. Mostrar cubiculo");
+        System.out.println("2. Mostrar oficina completa");
+        System.out.println("3. Asignar oficina");
+        System.out.println("4. Mostrar jefe");
+        System.out.println("5. Asignar jefe");
+        System.out.println("6. Eliminar jefe");
+        System.out.println("7. Eliminar empleado");
+        System.out.println("8. Mostrar oficinas adyacentes");
+        System.out.println("9. Salir");
         System.out.print("Opcion: ");
         //se escanea la variable dentro del switch
         switch(sc.nextInt()) {
             case 1: mostrarOficina(sedeActual); break;
-            case 2: asignarOficina(sedeActual); break;
-            case 3: sedeActual.mostrarJefe(); break;
-            case 4: asignarJefe(sedeActual); break;
-            case 5: sedeActual.eliminarJefe(); break;
-            case 6: eliminarEmpleado(sedeActual); break;
-            case 7: mostrarAdyacentes(sedeActual); break;
+            case 2: sedeActual.mostrarMatriz(); break;
+            case 3: asignarOficina(sedeActual); break;
+            case 4: sedeActual.mostrarJefe(); break;
+            case 5: asignarJefe(sedeActual); break;
+            case 6: sedeActual.eliminarJefe(); break;
+            case 7: eliminarEmpleado(sedeActual); break;
+            case 8: mostrarAdyacentes(sedeActual); break;
             //case 8: guardarArchivo(sedeActual); break;
             case 9: System.exit(0);
             default: System.out.println("Opción inválida!");
