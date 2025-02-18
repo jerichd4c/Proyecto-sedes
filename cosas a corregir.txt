@@ -4,12 +4,13 @@
  2.2 eliminar jefe LISTO
 3. guardarlo en un archivo .txt (para asi poder ver los cambios)
 4. eliminar empleado (por casilla) LISTO
-NOTA: función "solicitar oficina" no es agregar, si no mostrar
+NOTA: función "solicitar oficina" no es agregar, si no mostrar LISTO
 	NOTA 2: indicar que si la casilla ya tiene un empleado, preguntarle al usuario si quiere eliminar o dejarlo.
 
 ver la lógica detrás de cada función y bloque de código.
 
 5. Tengo que mostrar la oficina completa, hacer que se complemento con la función de guardado. LISTO
-	5.1 arreglar output de la matriz haciendo una columna extra
-	5.2 arreglar matrices contándose desde 0
+	5.1 arreglar output de la matriz haciendo una columna extra LISTO
+	5.2 arreglar matrices contándose desde 0 LISTO
 6. Hacer que la matriz se llene de todos enteros O todos strings
+7. Funcion mostar cubículo no se actualiza cuando se borra empleado

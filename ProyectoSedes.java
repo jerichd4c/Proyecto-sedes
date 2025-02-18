@@ -41,10 +41,12 @@ class Sede {
 
     //metodo para mostrar oficina COMPLETA
 
-    public void mostrarOficina(int fila, int columna) {
-        if (posicionValida(fila, columna)) {
+    public void mostrarOficina(int filaUsuario, int columnaUsuario) {
+        if (posicionValida(filaUsuario, columnaUsuario)) {
+           int fila=convertirIndice(filaUsuario);
+           int columna=convertirIndice(columnaUsuario);
            Object valor= cubiculos[fila][columna];
-           String mensaje = String.format("(%d, %d): %s", fila, columna, valor);
+           String mensaje = String.format("(%d, %d): %s", filaUsuario, columnaUsuario, valor);
            if (esJefe(fila, columna)) mensaje += " (Jefe)";
            System.out.println(mensaje);
         } else {
@@ -53,8 +55,10 @@ class Sede {
     }
                
     //metodo para asignar empleado a oficina 
-    public void asignarOficina(int fila, int columna, Object valor) {
-        if (posicionValida(fila, columna)) {
+    public void asignarOficina(int filaUsuario, int columnaUsuario, Object valor) {
+        if (posicionValida(filaUsuario, columnaUsuario)) {
+            int fila=convertirIndice(filaUsuario);
+            int columna=convertirIndice(columnaUsuario);
             cubiculos[fila][columna]=valor;
             System.out.println("Oficina asignada");
         } else {
@@ -63,8 +67,10 @@ class Sede {
     }
 
     //metodo para eliminar empleado
-    public void eliminarEmpleado(int fila, int columna) {
-        if (posicionValida(fila, columna)) {
+    public void eliminarEmpleado(int filaUsuario, int columnaUsuario) {
+        if (posicionValida(filaUsuario, columnaUsuario)) {
+            int fila=convertirIndice(filaUsuario);
+            int columna=convertirIndice(columnaUsuario);
             cubiculos[fila][columna]=null;
             if (esJefe(fila, columna)) eliminarJefe(); 
             System.out.println("Empleado eliminado");
@@ -76,7 +82,9 @@ class Sede {
     //metodo para mostrar jefe
     public void mostrarJefe() {
         if (jefeFila != -1 && jefeColumna != -1) {
-            System.out.println("Jefe actual: (" + cubiculos[jefeFila][jefeColumna] + " en posicion (" + jefeFila + ", " + jefeColumna + ")");
+            int filaNew=transformarJefe(jefeFila);
+            int columnaNew=transformarJefe(jefeColumna);
+            System.out.println("Jefe actual: (" + cubiculos[jefeFila][jefeColumna] + " en posicion (" + filaNew + ", " + columnaNew + "))");
         } else {
             System.out.println("No hay jefe asignado");
         }
@@ -88,8 +96,10 @@ class Sede {
     }
     
     //metodo para asignar jefe
-    public void asignarJefe(int fila, int columna) {
-        if (posicionValida(fila, columna)) {
+    public void asignarJefe(int filaJefe, int columnaJefe) {
+        if (posicionValida(filaJefe, columnaJefe)) {
+            int fila=convertirIndice(filaJefe);
+            int columna=convertirIndice(columnaJefe);
             jefeFila=fila;
             jefeColumna=columna;
             System.out.println("Jefe asignado");
@@ -106,7 +116,10 @@ class Sede {
     }
     
     //metodo para mostrar mostrar oficinas adyacentes
-    public void mostrarAdyacentes(int fila, int columna) {
+    public void mostrarAdyacentes(int filaUsuario, int columnaUsuario) {
+       int fila=convertirIndice(filaUsuario);
+       int columna=convertirIndice(columnaUsuario);
+       //mostrar posiciones
        System.out.println("Oficinas adyacentes:");
        verPosicion(fila-1, columna, "Arriba: Pared", "Arriba: %s");
        verPosicion(fila+1, columna, "Abajo: Piso", "Abajo: %s");
@@ -115,8 +128,10 @@ class Sede {
     }
 
     //metodo para ver las posiciones
-    private void verPosicion(int fila, int columna, String noExiste, String existe) {
-        if (posicionValida(fila, columna)) {
+    private void verPosicion(int filaUsuario, int columnaUsuario, String noExiste, String existe) {
+        if (posicionValida(filaUsuario, columnaUsuario)) {
+            int fila=convertirIndice(filaUsuario);
+            int columna=convertirIndice(columnaUsuario);
             Object valor= cubiculos[fila][columna];
             System.out.println(String.format(existe, valor));
         } else {
@@ -133,8 +148,8 @@ class Sede {
         return posicionValida(fila, columna) ? cubiculos[fila][columna] : null; }
     
     //metodo para la logica de posiciones validas
-    private boolean posicionValida(int fila, int columna) {
-        return fila >= 0 && fila < filas && columna >= 0 && columna < columnas;
+    private boolean posicionValida(int filaUsuario, int columnaUsuario) {
+        return filaUsuario >= 1 && filaUsuario <= filas && columnaUsuario >= 1 && columnaUsuario <= columnas;
     }
     
     //metodo para mostrar la oficina completa (matriz)
@@ -144,20 +159,22 @@ class Sede {
         //imprimir numero de columnas
         System.out.print("        ");
         //columnas
-        for (int j=0; j<columnas; j++) {
-            System.out.printf("|  Col %-4d ", j);
+        for (int j=1; j<=columnas; j++) {
+            System.out.printf("|  Col %-4d  ", j);
         }
         System.out.println("|");
         String separador=crearSeparador();
         System.out.println(separador);
         //filas
-        for (int i=0; i<filas; i++) {
+        for (int i=1; i<=filas; i++) {
         System.out.printf("Fila %-2d ", i);
-        for (int j=0; j<columnas; j++) {
-            Object valor= cubiculos[i][j];
+        for (int j=1; j<=columnas; j++) {
+            int filaReal= convertirIndice(i);
+            int columnaReal= convertirIndice(j);
+            Object valor= cubiculos[filaReal][columnaReal];
             String celda= valor != null ? valor.toString() : "(V)";
-            if (esJefe(i, j)) celda += " (J)";
-            System.out.printf("| %-8s", celda.length() > 8 ? celda.substring(0, 5) + "..." : celda);
+            if (esJefe(filaReal, columnaReal)) celda += " (J)";
+            System.out.printf("|  %-8s  ", celda.length() > 8 ? celda.substring(0, 5) + "..." : celda);
         }
         System.out.println("|");
         System.out.println(separador);
@@ -166,11 +183,21 @@ class Sede {
 
     //metodo para crear el separador dentro de funcion de mostrarMatriz
     private String crearSeparador() {
-        StringBuilder sb= new StringBuilder("       +");
+        StringBuilder sb= new StringBuilder("        +");
         for (int j=0; j<columnas; j++) {
-            sb.append("-----------+");
+            sb.append("------------+");
         }
     return sb.toString();
+    }
+
+    //metodo para convertir indice y que se mantenga con indice real
+    private int convertirIndice(int indiceUsuario) {
+        return indiceUsuario - 1;
+    }
+
+    //metodo para transformar de -1 a 1 en mostrarJefe
+    private int transformarJefe(int indiceJefe) {
+        return indiceJefe +1;
     }
 }
 
@@ -237,7 +264,7 @@ public static void main(String[] args) {
         int columna = sc.nextInt();
         sede.mostrarOficina(fila, columna);
     }
-    
+
     //metodo para asignar cubiculo
     private static void asignarOficina(Sede sede) {
         System.out.print("Ingrese la fila: ");
