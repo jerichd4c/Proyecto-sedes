@@ -1,0 +1,14 @@
+1.Seleccionar sede: LISTO
+***agregar tercera opción para ver que sean todos números o todos str***
+2.Mostrar cubículo: LISTO 
+3.Mostrar oficina completa: LISTO
+4.Asignar oficina: LISTO
+5.Mostrar jefe: LISTO
+6.Asignar jefe: LISTO
+***en la función asignar oficina, hay que tomar en consideración los casos cuando la persona que se quiere sobreescribir es el jefe, realizar caso if para esto (preguntar si se quiere pasar el jefe a persona)***
+7.Eliminar jefe: LISTO
+8.Eliminar empleado: LISTO
+***mismo caso que la anotación de asignarjefe, preguntar si hay prioridad especial para los casos donde se quiera eliminar el jefe.***
+9. Mostrar oficinas adyecentes: LISTO
+10. Guardar archivo: PARCIALMENTE LISTO
+***verificar lógica de sobreescritura***

@@ -1,4 +1,5 @@
 //librerias para escaner y para revolver personas 
+import java.io.*;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -117,14 +118,12 @@ class Sede {
     
     //metodo para mostrar mostrar oficinas adyacentes
     public void mostrarAdyacentes(int filaUsuario, int columnaUsuario) {
-       int fila=convertirIndice(filaUsuario);
-       int columna=convertirIndice(columnaUsuario);
        //mostrar posiciones
        System.out.println("Oficinas adyacentes:");
-       verPosicion(fila-1, columna, "Arriba: Pared", "Arriba: %s");
-       verPosicion(fila+1, columna, "Abajo: Piso", "Abajo: %s");
-       verPosicion(fila, columna-1, "Izquierda: Pared", "Izquierda: %s");
-       verPosicion(fila, columna+1, "Derecha: Piso", "Derecha: %s");
+       verPosicion(filaUsuario-1, columnaUsuario, "Arriba: Techo", "Arriba: %s");
+       verPosicion(filaUsuario+1, columnaUsuario, "Abajo: Piso", "Abajo: %s");
+       verPosicion(filaUsuario, columnaUsuario-1, "Izquierda: Pared", "Izquierda: %s");
+       verPosicion(filaUsuario, columnaUsuario+1, "Derecha: Pared", "Derecha: %s");
     }
 
     //metodo para ver las posiciones
@@ -144,12 +143,15 @@ class Sede {
     public int getColumnas() { return columnas; }
 
     //metodo para obtener el valor de la casilla
-    public Object getValorCubiculo(int fila, int columna) { 
+    public Object getValorCubiculo(int filaUsuario, int columnaUsuario) {
+        int fila=convertirIndice(filaUsuario);
+        int columna=convertirIndice(columnaUsuario);
+        System.out.println("DEBUG: getValorCubiculo(" + filaUsuario + "," + columnaUsuario + ") accediendo a [" + fila + "][" + columna + "]. Valor: " + cubiculos[fila][columna]);
         return posicionValida(fila, columna) ? cubiculos[fila][columna] : null; }
     
     //metodo para la logica de posiciones validas
     private boolean posicionValida(int filaUsuario, int columnaUsuario) {
-        return filaUsuario >= 1 && filaUsuario <= filas && columnaUsuario >= 1 && columnaUsuario <= columnas;
+        return filaUsuario >= 0 && filaUsuario <= filas && columnaUsuario >= 0 && columnaUsuario <= columnas; //probar mayor o igual a 0
     }
     
     //metodo para mostrar la oficina completa (matriz)
@@ -199,8 +201,49 @@ class Sede {
     private int transformarJefe(int indiceJefe) {
         return indiceJefe +1;
     }
-}
 
+    //metodo para guardar en archivo.txt
+    public void guardarArchivo(String archivo) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
+            //tipo de sede
+            writer.write("***" + nombre + "***\n");
+            //informacion del jefe
+            writer.write("jefe: " );
+            if (jefeFila != -1 && jefeColumna != -1) {
+                int filaNew=transformarJefe(jefeFila);
+                int columnaNew=transformarJefe(jefeColumna);
+                    System.out.println("Jefe actual: (" + cubiculos[jefeFila][jefeColumna] + " en posicion (" + filaNew + ", " + columnaNew + "))\n");
+                } else {
+                    System.out.println("No hay jefe asignado\n");
+                }
+            //3. Escribir matrices
+            writer.write("\n***Informacion de cubiculos***\n");
+            for (int i = 0; i < filas; i++) {
+                for (int j = 0; j < columnas; j++) {
+                    //sumar +1 a indice
+                    String posicion = String.format("(%d, %d)", i + 1, j + 1);
+                    String contenido = cubiculos[i][j] != null ? cubiculos[i][j].toString() : "(V)";
+                    //4. Marcar jefe
+                    if (esJefe(i, j)) {contenido += " (J)";
+                }
+                writer.write(posicion + ": " + contenido + "\n");
+            }
+            System.out.println("Datos guardados en archivo "+archivo);
+            }
+        } catch (IOException e) {
+            System.out.println("Error al guardar el archivo: " + e.getMessage());
+        }   
+    }
+
+    //metodo para saber la posicion del jefe
+    public boolean ocupadoJefe(int filaUsuario, int columnaUsuario) {
+        if (!posicionValida(filaUsuario, columnaUsuario)) return false;
+        int fila = convertirIndice(filaUsuario);
+        int columna = convertirIndice(columnaUsuario);
+        return esJefe(fila, columna);
+    }
+
+}
 // main 
 
 public class ProyectoSedes {
@@ -217,12 +260,21 @@ public static void main(String[] args) {
     Sede sede2 = new Sede("Sede 2", 5, 4);
     //variable para escoger sede
     Sede sedeActual=null;
+    //creacion de la variable para el archivo
+    String archivoNombre;
+    //menu para escoger sede
     System.out.println("***Seleccione sede***");
     System.out.println("1. Sede 1 (4x6)");
     System.out.println("2. Sede 2 (5x4)");
     System.out.print("Opcion: ");
     int opcionSede= sc.nextInt();
-    sedeActual= (opcionSede==1) ? sede1 : sede2;
+    if (opcionSede==1) {
+        sedeActual=sede1;
+        archivoNombre= "sede1.txt";
+    } else {
+        sedeActual=sede2;
+        archivoNombre= "sede2.txt";
+    }
 
     //menu switch para opciones y ciclo while mientras se haya seleccionado 1 o 2
 
@@ -240,15 +292,22 @@ public static void main(String[] args) {
         System.out.print("Opcion: ");
         //se escanea la variable dentro del switch
         switch(sc.nextInt()) {
-            case 1: mostrarOficina(sedeActual); break;
-            case 2: sedeActual.mostrarMatriz(); break;
-            case 3: asignarOficina(sedeActual); break;
-            case 4: sedeActual.mostrarJefe(); break;
-            case 5: asignarJefe(sedeActual); break;
-            case 6: sedeActual.eliminarJefe(); break;
-            case 7: eliminarEmpleado(sedeActual); break;
-            case 8: mostrarAdyacentes(sedeActual); break;
-            //case 8: guardarArchivo(sedeActual); break;
+            case 1: mostrarOficina(sedeActual); 
+            break;
+            case 2: sedeActual.mostrarMatriz(); 
+            break;
+            case 3: asignarOficina(sedeActual);
+            break;
+            case 4: sedeActual.mostrarJefe(); 
+            break;
+            case 5: asignarJefe(sedeActual); 
+            break;
+            case 6: sedeActual.eliminarJefe(); 
+            break;
+            case 7: eliminarEmpleado(sedeActual); 
+            break;
+            case 8: mostrarAdyacentes(sedeActual); 
+            break;
             case 9: System.exit(0);
             default: System.out.println("Opción inválida!");
             }
@@ -271,19 +330,50 @@ public static void main(String[] args) {
         int fila = sc.nextInt();
         System.out.print("Ingrese la columna: ");
         int columna = sc.nextInt();
-        System.out.print("Ingrese el empleado: ");
-        Object empleado = sc.next();
-        if (sede.getValorCubiculo(fila, columna) != null) {
+        System.out.print("Ingrese el empleado (ingrese '(V)' para dejar la casilla vacia): ");
+        String inputEmpleado = sc.next();
+        Object empleado;
+        if (inputEmpleado.equalsIgnoreCase("(V)")) {
+            empleado = null;
+        } else {
+            try {
+                empleado = Integer.parseInt(inputEmpleado);
+            } catch (NumberFormatException e) {
+                empleado = inputEmpleado;
+            }
+        }
+
+        Object currentEmpleado= sede.getValorCubiculo(fila, columna);
+        // Depurar: imprime el valor actual para verificar qué se almacena
+        if (currentEmpleado != null) {
+        System.out.println("DEBUG: current = [" + currentEmpleado.toString() + "]");    
+        }
+
+        boolean cubiculoOcupado= (currentEmpleado != null && !currentEmpleado.toString().trim().equals("(V)"));
+        if (cubiculoOcupado) {
+            if (sede.ocupadoJefe(fila, columna)) {
+                System.out.println("La casilla esta ocupada por el jefe");
+                System.out.println("1. Reemplazarlo por empleado normal");
+                System.out.println("2. Dejarlo");
+                String decision= sc.next();
+                if (decision.equals("1")){
+                    sede.eliminarJefe();
+                } else {
+                    return; 
+                }
+            } else {
             System.out.println("La casilla ya tiene un empleado");
             System.out.println("1. Eliminar empleado");
             System.out.println("2. Dejarlo");
-            if (sc.next().equalsIgnoreCase("1")) {
+            String decision= sc.next();
+            if (decision.equals("1")) {
                 sede.eliminarEmpleado(fila, columna);
+            } else {
+                return;
             }
         }
-        System.out.println("Valor manual o aleatorio (m/a)?");
-        Object valor= sc.next().equalsIgnoreCase("m") ? leerValorManual() : generarValorAleatorio();
-        sede.asignarOficina(fila, columna, valor);
+    }
+        sede.asignarOficina(fila, columna, empleado);
     }
     //metodo para asignar valor manual o aleatorio dentro del metodo asignar cubiculo
     
@@ -328,5 +418,10 @@ public static void main(String[] args) {
         System.out.print("Ingrese la columna: ");
         int columna = sc.nextInt();
         sede.mostrarAdyacentes(fila, columna);
+    }
+
+    //metodo para convertir indice y que se mantenga con indice real
+    private int convertirIndice(int indiceUsuario) {
+        return indiceUsuario - 1;
     }
 }
