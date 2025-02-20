@@ -1,5 +1,4 @@
 //librerias para escaner y para revolver personas 
-import java.io.*;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -25,6 +24,7 @@ class Sede {
         this.nombre=nombre;
         this.filas=filas;
         this.columnas=columnas;
+        //atributo tipo de cubiculo para llenar las sedes
         this.tipoCubiculos=tipoCubiculos;
         this.cubiculos=new Object[filas][columnas];
         llenarCubiculos();
@@ -53,7 +53,6 @@ class Sede {
 }
 
     //metodo para mostrar oficina COMPLETA
-
     public void mostrarOficina(int filaUsuario, int columnaUsuario) {
         if (posicionValida(filaUsuario, columnaUsuario)) {
            int fila=convertirIndice(filaUsuario);
@@ -115,8 +114,6 @@ class Sede {
             int columna=convertirIndice(columnaJefe);
             jefeFila=fila;
             jefeColumna=columna;
-            System.out.println("DEBUG: Llamando a asignarJefe con índices usuario: (" 
-            + filaJefe + ", " + columnaJefe + ")");
             System.out.println("Jefe asignado");
         } else {
             System.out.println("Posicion no encontrada");
@@ -160,7 +157,6 @@ class Sede {
     public Object getValorCubiculo(int filaUsuario, int columnaUsuario) {
         int fila=convertirIndice(filaUsuario);
         int columna=convertirIndice(columnaUsuario);
-        System.out.println("DEBUG: getValorCubiculo(" + filaUsuario + "," + columnaUsuario + ") accediendo a [" + fila + "][" + columna + "]. Valor: " + cubiculos[fila][columna]);
         return posicionValida(fila, columna) ? cubiculos[fila][columna] : null; }
     
     //metodo para la logica de posiciones validas
@@ -190,7 +186,7 @@ class Sede {
             Object valor= cubiculos[filaReal][columnaReal];
             String celda= valor != null ? valor.toString() : "(V)";
             if (esJefe(filaReal, columnaReal)) celda += " (J)";
-            System.out.printf("|  %-8s  ", celda.length() > 8 ? celda.substring(0, 5) + "..." : celda);
+            System.out.printf("|  %-8s  ", celda.length() > 8 ? celda.substring(0, 8) + "..." : celda);
         }
         System.out.println("|");
         System.out.println(separador);
@@ -216,62 +212,26 @@ class Sede {
         return indiceJefe +1;
     }
 
-    //metodo para guardar en archivo.txt
-    public void guardarArchivo(String archivo) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
-            //tipo de sede
-            writer.write("***" + nombre + "***\n");
-            //informacion del jefe
-            writer.write("jefe: " );
-            if (jefeFila != -1 && jefeColumna != -1) {
-                int filaNew=transformarJefe(jefeFila);
-                int columnaNew=transformarJefe(jefeColumna);
-                    System.out.println("Jefe actual: (" + cubiculos[jefeFila][jefeColumna] + " en posicion (" + filaNew + ", " + columnaNew + "))\n");
-                } else {
-                    System.out.println("No hay jefe asignado\n");
-                }
-            //3. Escribir matrices
-            writer.write("\n***Informacion de cubiculos***\n");
-            for (int i = 0; i < filas; i++) {
-                for (int j = 0; j < columnas; j++) {
-                    //sumar +1 a indice
-                    String posicion = String.format("(%d, %d)", i + 1, j + 1);
-                    String contenido = cubiculos[i][j] != null ? cubiculos[i][j].toString() : "(V)";
-                    //4. Marcar jefe
-                    if (esJefe(i, j)) {contenido += " (J)";
-                }
-                writer.write(posicion + ": " + contenido + "\n");
-            }
-            System.out.println("Datos guardados en archivo "+archivo);
-            }
-        } catch (IOException e) {
-            System.out.println("Error al guardar el archivo: " + e.getMessage());
-        }   
-    }
-
     //metodo para saber si el cubiculo es jefe
     public boolean casillaJefe(int filaUsuario, int columnaUsuario) {
         if (!posicionValida(filaUsuario, columnaUsuario)) return false;
         int fila=convertirIndice(filaUsuario);
         int columna=convertirIndice(columnaUsuario);
-        System.out.println("DEBUG: isJefeAt(" + filaUsuario + "," + columnaUsuario + ") -> indices convertidos: (" 
-        + fila + "," + columna + "), jefe en: (" + jefeFila + "," + jefeColumna + ")");
-    return esJefe(fila, columna);
+        return esJefe(fila, columna);
     }
 
 }
-// main 
-
-public class ProyectoSedes {
+    //main 
+    public class ProyectoSedes {
 
     //creacion de variables para scanner y para generar numero aleatorio
     static Scanner sc = new Scanner(System.in);
-    static Random rand = new Random();
 
-//public static para consola
-public static void main(String[] args) {
+    //public static para consola
+    public static void main(String[] args) {
     //escoger tipo de dato
     int tipo;
+    //ciclo while para validar entrada
     do {
     System.out.println("Escoga el tipo de dato para llenar las sedes: ");
     System.out.println("1. Integer");
@@ -312,7 +272,6 @@ public static void main(String[] args) {
     }
 
     //menu switch para opciones y ciclo while mientras se haya seleccionado 1 o 2
-
     while (true) {
         System.out.println("***Menu***");
         System.out.println("1. Mostrar cubiculo");
@@ -349,7 +308,7 @@ public static void main(String[] args) {
         }
     }
     
-    //aplicacion de metodos
+    //aplicacion de metodos en public:
 
     //metodo para mostrar cubiculo
     private static void mostrarOficina(Sede sede) {
@@ -380,10 +339,6 @@ public static void main(String[] args) {
         }
 
         Object currentEmpleado= sede.getValorCubiculo(fila, columna);
-        // Depurar: imprime el valor actual para verificar qué se almacena
-        if (currentEmpleado != null) {
-        System.out.println("DEBUG: current = [" + currentEmpleado.toString() + "]");    
-        }
 
         boolean cubiculoOcupado= (currentEmpleado != null && !currentEmpleado.toString().trim().equals("(V)"));
         if (cubiculoOcupado) {
@@ -411,24 +366,6 @@ public static void main(String[] args) {
     }
         sede.asignarOficina(fila, columna, empleado);
     }
-    //metodo para asignar valor manual o aleatorio dentro del metodo asignar cubiculo
-    
-    //manual
-    private static Object leerValorManual() {
-        System.out.print("Ingrese el empleado(numero/texto): ");
-        sc.nextLine();
-        String input= sc.nextLine();
-        try {
-            return Integer.parseInt(input);
-        } catch (NumberFormatException e) {
-            return input;
-        }
-    }
-    //aleatorio
-    private static Object generarValorAleatorio() {
-        return rand.nextBoolean() ? rand.nextInt(100) :
-        new String[]{"Juan", "Maria", "Pedro", "Luis", "Miguel", "Sofia", "Ivan", "Sergio", "Javier"}[rand.nextInt(9)];
-    }
     
     //metodo para asignar jefe 
     private static void asignarJefe(Sede sede) {
@@ -451,11 +388,6 @@ public static void main(String[] args) {
         int columna = sc.nextInt();
 
         Object currentEmpleado= sede.getValorCubiculo(fila, columna);
-        // Depurar: imprime el valor actual para verificar qué se almacena
-        if (currentEmpleado != null) {
-        System.out.println("DEBUG: current = [" + currentEmpleado.toString() + "]");    
-        }
-
         boolean cubiculoOcupado= (currentEmpleado != null && !currentEmpleado.toString().trim().equals("(V)"));
         if (cubiculoOcupado) {
             if (sede.casillaJefe(fila, columna) ) {
@@ -467,7 +399,7 @@ public static void main(String[] args) {
                     sede.eliminarJefe();
                     System.out.println("Se elimino el jefe");
                 } else {
-                //Si no es el jefe, se elimina normalmente
+                //si no es el jefe, se elimina normalmente
                 System.out.println("No se elimino el jefe");
                 }
             } else {
@@ -486,10 +418,4 @@ public static void main(String[] args) {
         int columna = sc.nextInt();
         sede.mostrarAdyacentes(fila, columna);
     }
-
-    //metodo para convertir indice y que se mantenga con indice real
-    private int convertirIndice(int indiceUsuario) {
-        return indiceUsuario - 1;
-    }
-
 }

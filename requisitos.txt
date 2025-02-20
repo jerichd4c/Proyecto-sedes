@@ -10,4 +10,4 @@
 10. Guardar archivo: NO ESTA LISTO
 ***verificar lógica de sobreescritura***
 
-NOTA: eliminar código no utilizado (métodos y debugs) WIP
+NOTA: eliminar código no utilizado (métodos y debugs) LISTO
