@@ -1,5 +1,4 @@
 1.Seleccionar sede: LISTO
-***agregar tercera opción para ver que sean todos números o todos str***
 2.Mostrar cubículo: LISTO 
 3.Mostrar oficina completa: LISTO
 4.Asignar oficina: LISTO
@@ -8,7 +7,7 @@
 7.Eliminar jefe: LISTO
 8.Eliminar empleado: LISTO
 9. Mostrar oficinas adyecentes: LISTO
-10. Guardar archivo: PARCIALMENTE LISTO
+10. Guardar archivo: NO ESTA LISTO
 ***verificar lógica de sobreescritura***
 
-NOTA: eliminar código no utilizado (métodos y debugs)
+NOTA: eliminar código no utilizado (métodos y debugs) WIP

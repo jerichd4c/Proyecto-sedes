@@ -16,11 +16,16 @@ class Sede {
     private int jefeFila= -1;
     private int jefeColumna= -1;
     private Random rand= new Random();
+
+    //var para 1. ints 2. strings 3. random
+    private int tipoCubiculos;
+
     //usar atributos privados en public
-    public Sede (String nombre, int filas, int columnas) {
+    public Sede (String nombre, int filas, int columnas, int tipoCubiculos) {
         this.nombre=nombre;
         this.filas=filas;
         this.columnas=columnas;
+        this.tipoCubiculos=tipoCubiculos;
         this.cubiculos=new Object[filas][columnas];
         llenarCubiculos();
     }
@@ -31,7 +36,13 @@ class Sede {
         String [] nombres = {"Cesar","Juan","Maria","Luis","Pedro","Miguel","Sofia","Ivan","Sergio","Javier"};
         for (int i=0; i<filas; i++) {
             for (int j=0; j<columnas; j++) {
-                if (rand.nextBoolean()) {
+                if (tipoCubiculos==1) {
+                    cubiculos[i][j]=rand.nextInt(100);
+                } else if (tipoCubiculos==2) {
+                    cubiculos[i][j]=nombres[rand.nextInt(nombres.length)];
+                } else{
+                    //mezcla
+                    if (rand.nextBoolean()) {
                     cubiculos[i][j]=rand.nextInt(100);
                 } else {
                     cubiculos[i][j]=nombres[rand.nextInt(nombres.length)];
@@ -39,6 +50,7 @@ class Sede {
             }
         }
     }
+}
 
     //metodo para mostrar oficina COMPLETA
 
@@ -258,10 +270,29 @@ public class ProyectoSedes {
 
 //public static para consola
 public static void main(String[] args) {
+    //escoger tipo de dato
+    int tipo;
+    do {
+    System.out.println("Escoga el tipo de dato para llenar las sedes: ");
+    System.out.println("1. Integer");
+    System.out.println("2. String");
+    System.out.println("3. Mezcla (int y string)");
+    System.out.print("Opcion: ");
+    while (!sc.hasNextInt()) { // validar que la entrada sea un entero
+        System.out.println("Opcion no valida");
+        sc.next();
+    }
+    tipo = sc.nextInt();
+    sc.nextLine(); // limpiar el buffer de entrada
+    if (tipo <1 || tipo > 3) {
+        System.out.println("Opcion no valida");
+    }
+    } while (tipo <1 || tipo > 3);
+
     //objeto sede 1
-    Sede sede1 = new Sede("Sede 1", 4, 6);
+    Sede sede1 = new Sede("Sede 1", 4, 6, tipo);
     //objeto sede 2
-    Sede sede2 = new Sede("Sede 2", 5, 4);
+    Sede sede2 = new Sede("Sede 2", 5, 4, tipo);
     //variable para escoger sede
     Sede sedeActual=null;
     //creacion de la variable para el archivo
@@ -317,6 +348,7 @@ public static void main(String[] args) {
             }
         }
     }
+    
     //aplicacion de metodos
 
     //metodo para mostrar cubiculo
