@@ -92,7 +92,7 @@ class Sede {
     }
 
      //metodo para saber si es jefe
-     private boolean esJefe(int fila, int columna) {
+     public boolean esJefe(int fila, int columna) {
         return jefeFila == fila && jefeColumna == columna;
     }
     
@@ -103,6 +103,8 @@ class Sede {
             int columna=convertirIndice(columnaJefe);
             jefeFila=fila;
             jefeColumna=columna;
+            System.out.println("DEBUG: Llamando a asignarJefe con índices usuario: (" 
+            + filaJefe + ", " + columnaJefe + ")");
             System.out.println("Jefe asignado");
         } else {
             System.out.println("Posicion no encontrada");
@@ -235,12 +237,14 @@ class Sede {
         }   
     }
 
-    //metodo para saber la posicion del jefe
-    public boolean ocupadoJefe(int filaUsuario, int columnaUsuario) {
+    //metodo para saber si el cubiculo es jefe
+    public boolean casillaJefe(int filaUsuario, int columnaUsuario) {
         if (!posicionValida(filaUsuario, columnaUsuario)) return false;
-        int fila = convertirIndice(filaUsuario);
-        int columna = convertirIndice(columnaUsuario);
-        return esJefe(fila, columna);
+        int fila=convertirIndice(filaUsuario);
+        int columna=convertirIndice(columnaUsuario);
+        System.out.println("DEBUG: isJefeAt(" + filaUsuario + "," + columnaUsuario + ") -> indices convertidos: (" 
+        + fila + "," + columna + "), jefe en: (" + jefeFila + "," + jefeColumna + ")");
+    return esJefe(fila, columna);
     }
 
 }
@@ -351,7 +355,7 @@ public static void main(String[] args) {
 
         boolean cubiculoOcupado= (currentEmpleado != null && !currentEmpleado.toString().trim().equals("(V)"));
         if (cubiculoOcupado) {
-            if (sede.ocupadoJefe(fila, columna)) {
+            if (sede.casillaJefe(fila, columna) ) {
                 System.out.println("La casilla esta ocupada por el jefe");
                 System.out.println("1. Reemplazarlo por empleado normal");
                 System.out.println("2. Dejarlo");
@@ -401,6 +405,10 @@ public static void main(String[] args) {
         System.out.print("Ingrese la columna: ");
         int columna = sc.nextInt();
         sede.asignarJefe(fila, columna);
+        Object currentEmpleado= sede.getValorCubiculo(fila, columna);
+        if (currentEmpleado == null) {
+            System.out.println("El cubiculo esta vacio, no se puede asignar el jefe");
+        }
     }
 
     //metodo para eliminar empleado
@@ -409,8 +417,35 @@ public static void main(String[] args) {
         int fila = sc.nextInt();
         System.out.print("Ingrese la columna: ");
         int columna = sc.nextInt();
-        sede.eliminarEmpleado(fila, columna);
+
+        Object currentEmpleado= sede.getValorCubiculo(fila, columna);
+        // Depurar: imprime el valor actual para verificar qué se almacena
+        if (currentEmpleado != null) {
+        System.out.println("DEBUG: current = [" + currentEmpleado.toString() + "]");    
+        }
+
+        boolean cubiculoOcupado= (currentEmpleado != null && !currentEmpleado.toString().trim().equals("(V)"));
+        if (cubiculoOcupado) {
+            if (sede.casillaJefe(fila, columna) ) {
+                System.out.println("La casilla esta ocupada por el jefe");
+                System.out.println("1. Eliminar");
+                System.out.println("2. Dejarlo");
+                String decision= sc.next();
+                if (decision.equals("1")){
+                    sede.eliminarJefe();
+                    System.out.println("Se elimino el jefe");
+                } else {
+                //Si no es el jefe, se elimina normalmente
+                System.out.println("No se elimino el jefe");
+                }
+            } else {
+                sede.eliminarEmpleado(fila, columna);
+            }
+        } else {
+            System.out.println("La casilla esta vacia");
+        }
     }
+
     //metodo para mostrar adyacentes
     private static void mostrarAdyacentes(Sede sede) {
         System.out.print("Ingrese la fila: ");
@@ -424,4 +459,5 @@ public static void main(String[] args) {
     private int convertirIndice(int indiceUsuario) {
         return indiceUsuario - 1;
     }
+
 }
