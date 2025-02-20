@@ -160,7 +160,7 @@ class Sede {
         return posicionValida(fila, columna) ? cubiculos[fila][columna] : null; }
     
     //metodo para la logica de posiciones validas
-    private boolean posicionValida(int filaUsuario, int columnaUsuario) {
+    public boolean posicionValida(int filaUsuario, int columnaUsuario) {
         return filaUsuario >= 0 && filaUsuario <= filas && columnaUsuario >= 0 && columnaUsuario <= columnas; //probar mayor o igual a 0
     }
     
@@ -416,6 +416,10 @@ class Sede {
         int fila = sc.nextInt();
         System.out.print("Ingrese la columna: ");
         int columna = sc.nextInt();
+        if (!sede.posicionValida(fila, columna)) {
+            System.out.println("Posicion no encontrada");
+            return;
+        }
         sede.mostrarAdyacentes(fila, columna);
     }
 }
