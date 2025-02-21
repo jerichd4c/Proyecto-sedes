@@ -1,6 +1,5 @@
 //librerias para escaner y para revolver personas 
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 //paso 1: creacion de las clases (fuera del main)
 
@@ -8,16 +7,16 @@ import java.util.Scanner;
 
 class Sede {
     //atributos privados
-    private String nombre;
-    private int filas;
-    private int columnas;
-    private Object[][] cubiculos;
+    private final String nombre;
+    private final int filas;
+    private final int columnas;
+    private final Object[][] cubiculos;
     private int jefeFila= -1;
     private int jefeColumna= -1;
-    private Random rand= new Random();
+    private final Random rand= new Random();
 
     //var para 1. ints 2. strings 3. random
-    private int tipoCubiculos;
+    private final int tipoCubiculos;
 
     //usar atributos privados en public
     public Sede (String nombre, int filas, int columnas, int tipoCubiculos) {
@@ -117,7 +116,7 @@ class Sede {
             System.out.println("Jefe asignado");
         } else {
             System.out.println("Posicion no encontrada");
-        }
+        } 
     }
 
     //metodo para eliminar jefe
@@ -254,9 +253,7 @@ class Sede {
     //objeto sede 2
     Sede sede2 = new Sede("Sede 2", 5, 4, tipo);
     //variable para escoger sede
-    Sede sedeActual=null;
-    //creacion de la variable para el archivo
-    String archivoNombre;
+    Sede sedeActual;
     //menu para escoger sede
     System.out.println("***Seleccione sede***");
     System.out.println("1. Sede 1 (4x6)");
@@ -265,10 +262,8 @@ class Sede {
     int opcionSede= sc.nextInt();
     if (opcionSede==1) {
         sedeActual=sede1;
-        archivoNombre= "sede1.txt";
     } else {
         sedeActual=sede2;
-        archivoNombre= "sede2.txt";
     }
 
     //menu switch para opciones y ciclo while mientras se haya seleccionado 1 o 2
@@ -279,7 +274,7 @@ class Sede {
         System.out.println("3. Asignar oficina");
         System.out.println("4. Mostrar jefe");
         System.out.println("5. Asignar jefe");
-        System.out.println("6. Eliminar jefe");
+        System.out.println("6. Deasignar jefe");
         System.out.println("7. Eliminar empleado");
         System.out.println("8. Mostrar oficinas adyacentes");
         System.out.println("9. Salir");
@@ -406,7 +401,7 @@ class Sede {
                 sede.eliminarEmpleado(fila, columna);
             }
         } else {
-            System.out.println("La casilla esta vacia");
+            System.out.println("Posicion no encontrada");
         }
     }
 
